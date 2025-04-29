@@ -182,13 +182,46 @@ if df is not None:
             set_data(df)
             st.experimental_rerun()
 
-    st.sidebar.header("3. Undo")
-    if st.sidebar.button("Undo Last Step", key="undo_btn"):
+    # Undo Button
+    st.sidebar.header("Undo")
+    if st.sidebar.button("Undo Last Cleaning Step"):
         undo()
         st.experimental_rerun()
 
-    # Refresh df to ensure latest session state
-    df = get_data()
+    # 3. Analysis and Visualization
+    st.sidebar.header("3. Basic Analysis & Visualization")
 
-    # The rest of the code below remains unchanged and uses the fresh df
-    # ... [EDA, visualizations, profiling, ML, download sections] ...
+    with st.sidebar.expander("Quick Summary"):
+        if st.button("Show Summary Stats", key="summary_button"):
+            st.subheader("Summary Statistics")
+            st.write(df.describe(include='all'))
+
+    with st.sidebar.expander("Visualize Columns"):
+        with st.form("viz_form"):
+            col_to_plot = st.selectbox("Select a column to visualize", options=list(df.columns), key="viz_col_select")
+            plot_type = st.selectbox("Plot Type", options=["Histogram", "Bar Plot", "Box Plot"], key="plot_type_select")
+            submitted_plot = st.form_submit_button("Create Plot", key="viz_submit")
+            if submitted_plot:
+                st.subheader(f"{plot_type} for {col_to_plot}")
+                fig = None
+                if plot_type == "Histogram":
+                    fig = px.histogram(df, x=col_to_plot)
+                elif plot_type == "Bar Plot":
+                    fig = px.bar(df[col_to_plot].value_counts().reset_index(), x='index', y=col_to_plot)
+                elif plot_type == "Box Plot":
+                    fig = px.box(df, y=col_to_plot)
+                if fig:
+                    st.plotly_chart(fig, use_container_width=True)
+
+    # 4. Download Cleaned File
+    st.sidebar.header("4. Download Cleaned Data")
+
+    def get_table_download_link(df):
+        towrite = BytesIO()
+        df.to_excel(towrite, encoding='utf-8', index=False, header=True)
+        towrite.seek(0)
+        b64 = base64.b64encode(towrite.read()).decode()
+        href = f'<a href="data:application/octet-stream;base64,{b64}" download="cleaned_data.xlsx">📥 Download Cleaned Data</a>'
+        return href
+
+    st.markdown(get_table_download_link(df), unsafe_allow_html=True)
