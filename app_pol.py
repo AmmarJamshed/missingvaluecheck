@@ -91,7 +91,7 @@ if df is not None:
         with st.form("dupes_form"):
             drop_dupes = st.checkbox("Drop duplicate rows", key="drop_dupes_checkbox")
             subset_cols = st.multiselect("Subset columns for duplicate check", options=list(df.columns), key="dupe_subset_multiselect")
-            submitted = st.form_submit_button("Apply Duplicate Handling", key="dupe_submit")
+            submitted = st.form_submit_button("Apply Duplicate Handling")
             if submitted:
                 add_history(df)
                 if drop_dupes:
