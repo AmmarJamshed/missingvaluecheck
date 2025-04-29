@@ -59,7 +59,6 @@ if df is not None:
     st.write(f"Shape: {df.shape}")
     st.write(f"Columns: {list(df.columns)}")
     st.write(df.dtypes)
-    st.write("Current columns:", list(df.columns))
 
     # Cleaning options
     st.sidebar.header("2. Data Cleaning")
@@ -166,7 +165,6 @@ if df is not None:
                 df = df.drop(columns=cols_to_remove)
                 set_data(df)
                 st.experimental_rerun()
-
         with st.form("keep_form"):
             cols_to_keep = st.multiselect("Columns to keep", options=list(df.columns))
             submitted_keep = st.form_submit_button("Keep Only Selected Columns")
@@ -185,6 +183,6 @@ if df is not None:
 
     # Undo Button
     st.sidebar.header("Undo")
-    if st.sidebar.button("Undo Last Step"):
+    if st.sidebar.button("Undo Last Action"):
         undo()
         st.experimental_rerun()
