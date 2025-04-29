@@ -69,7 +69,7 @@ if df is not None:
             drop_nulls_cols = st.checkbox("Drop columns with any nulls", key="drop_nulls_cols_checkbox")
             fill_nulls = st.checkbox("Fill nulls", key="fill_nulls_checkbox")
             fill_value = st.text_input("Fill value (leave blank for mean/ffill)", key="fill_value_input")
-            submitted = st.form_submit_button("Apply Null Handling", key="nulls_submit")
+            submitted = st.form_submit_button("Apply Null Handling")
             if submitted:
                 add_history(df)
                 if drop_nulls:
